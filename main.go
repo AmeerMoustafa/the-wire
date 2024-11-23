@@ -48,7 +48,6 @@ func (s *Server) readLoop(ws *websocket.Conn) {
 		formatted_message := fmt.Sprintf(`<div id="message" hx-swap-oob="beforeend">
     <p>%s</p>
 </div>`, html.EscapeString(message))
-		// fmt.Println([]byte(formatted_message))
 		go s.broadcast([]byte(formatted_message))
 	}
 

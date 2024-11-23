@@ -35,27 +35,144 @@ ___________.__              __      __.________________________
 
       <div
         id="message"
-        class="w-1/2 border border-green-500 p-4 h-96 overflow-y-auto mb-4"
+        class="w-1/2 border border-green-500 p-4 h-96 overflow-y-auto mb-4 crt"
         hx-swap-oob="beforeend"
-      ></div>
+      >
+        <div>
+          <span class="font-bold text-green-400">SYSTEM: </span>Firewall
+          breached. Accessing mainframe...
+        </div>
+        <div>
+          <span class="font-bold text-green-400">SYSTEM: </span>Connection
+          established. Welcome to the underground.
+        </div>
+      </div>
       <form
         id="form"
         class="w-1/2 flex gap-2"
         ws-send
-        hx-on="htmx:wsAfterSend: this.reset()"
+        hx-on::ws-after-send="this.reset()"
       >
         <input
           type="text"
           name="message_input"
           placeholder="Enter Command...."
-          class="pl-4 flex-grow border-solid border-2 bg-black text-green-500 border-green-500 focus:ring-green-500 focus:border-green-500"
+          class="pl-4 flex-grow border-solid border-2 bg-black text-green-500 border-green-500 focus:outline-none focus:ring-green-500 focus:border-green-500 rounded"
         />
         <button
-          class="p-4 bg-green-500 text-black hover:bg-green-600 focus:ring-green-400"
+          class="p-4 bg-green-500 text-black hover:bg-green-600 focus:ring-green-400 rounded"
         >
           SEND
         </button>
       </form>
     </div>
+    <style>
+      @keyframes flicker {
+        0% {
+          opacity: 0.8;
+        }
+        5% {
+          opacity: 0.85;
+        }
+        10% {
+          opacity: 0.9;
+        }
+        15% {
+          opacity: 0.85;
+        }
+        20% {
+          opacity: 0.8;
+        }
+        25% {
+          opacity: 0.75;
+        }
+        30% {
+          opacity: 0.9;
+        }
+        35% {
+          opacity: 0.85;
+        }
+        40% {
+          opacity: 0.8;
+        }
+        45% {
+          opacity: 0.9;
+        }
+        50% {
+          opacity: 0.75;
+        }
+        55% {
+          opacity: 0.85;
+        }
+        60% {
+          opacity: 0.9;
+        }
+        65% {
+          opacity: 0.8;
+        }
+        70% {
+          opacity: 0.85;
+        }
+        75% {
+          opacity: 0.9;
+        }
+        80% {
+          opacity: 0.8;
+        }
+        85% {
+          opacity: 0.75;
+        }
+        90% {
+          opacity: 0.9;
+        }
+        95% {
+          opacity: 0.85;
+        }
+        100% {
+          opacity: 0.8;
+        }
+      }
+
+      .crt::after {
+        content: " ";
+        display: block;
+        position: absolute;
+        top: 0;
+        left: 0;
+        bottom: 0;
+        right: 0;
+        background: rgba(18, 16, 16, 0.1);
+        opacity: 0;
+        z-index: 2;
+        pointer-events: none;
+      }
+
+      .crt {
+        animation: flicker 0.15s infinite;
+      }
+
+      .crt::before {
+        content: " ";
+        display: block;
+        position: absolute;
+        top: 0;
+        left: 0;
+        bottom: 0;
+        right: 0;
+        background: linear-gradient(
+            rgba(18, 16, 16, 0) 50%,
+            rgba(0, 0, 0, 0.25) 50%
+          ),
+          linear-gradient(
+            90deg,
+            rgba(255, 0, 0, 0.06),
+            rgba(0, 255, 0, 0.02),
+            rgba(0, 0, 255, 0.06)
+          );
+        z-index: 2;
+        background-size: 100% 2px, 3px 100%;
+        pointer-events: none;
+      }
+    </style>
   </body>
 </html>
