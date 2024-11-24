@@ -29,25 +29,13 @@ func (s *Server) handleWS(ws *websocket.Conn) {
 }
 
 func (s *Server) readLoop(ws *websocket.Conn) {
-	// buf := make([]byte, 1024)
+
 	for {
-		// n, err := ws.Read(buf)
-		// if err != nil {
-		// 	if err == io.EOF {
-		// 		break
-		// 	}
-		// 	fmt.Println("Read error:", err)
-		// 	return
-		// }
-		// msg := buf[:n]
-
-		var test map[string]interface{}
-
-		websocket.JSON.Receive(ws, &test)
-		message := string(test["message_input"].(string))
+		var packet map[string]interface{}
+		websocket.JSON.Receive(ws, &packet)
+		message := string(packet["message_input"].(string))
 		formatted_message := fmt.Sprintf(`<div id="message" hx-swap-oob="beforeend">
-    <p>%s</p>
-</div>`, html.EscapeString(message))
+    	<p>%s</p></div>`, html.EscapeString(message))
 		go s.broadcast([]byte(formatted_message))
 	}
 
