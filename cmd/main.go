@@ -13,7 +13,7 @@ type Server struct {
 }
 
 func servIndex(w http.ResponseWriter, r *http.Request) {
-	http.ServeFile(w, r, "templates/index.html")
+	http.ServeFile(w, r, "../templates/index.html")
 }
 
 func newServer() *Server {
@@ -59,9 +59,8 @@ func main() {
 	http.HandleFunc("/", servIndex)
 	http.Handle("/ws", websocket.Handler(server.handleWS))
 	http.HandleFunc("/login", func(w http.ResponseWriter, r *http.Request) {
-		http.ServeFile(w, r, "templates/login.html")
+		http.ServeFile(w, r, "../templates/login.html")
 
 	})
-
 	http.ListenAndServe(":1337", nil)
 }
