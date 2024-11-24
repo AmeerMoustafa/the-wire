@@ -29,14 +29,16 @@ func (s *Server) handleWS(ws *websocket.Conn) {
 }
 
 func (s *Server) readLoop(ws *websocket.Conn) {
-
 	for {
 		var packet map[string]interface{}
 		websocket.JSON.Receive(ws, &packet)
-		message := string(packet["message_input"].(string))
-		formatted_message := fmt.Sprintf(`<div id="message" hx-swap-oob="beforeend">
+		if len(packet) > 0 {
+			message := string(packet["message_input"].(string))
+			formatted_message := fmt.Sprintf(`<div id="message" hx-swap-oob="beforeend">
     	<p>%s</p></div>`, html.EscapeString(message))
-		go s.broadcast([]byte(formatted_message))
+			go s.broadcast([]byte(formatted_message))
+		}
+
 	}
 
 }
