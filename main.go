@@ -58,6 +58,10 @@ func main() {
 	server := newServer()
 	http.HandleFunc("/", servIndex)
 	http.Handle("/ws", websocket.Handler(server.handleWS))
+	http.HandleFunc("/login", func(w http.ResponseWriter, r *http.Request) {
+		http.ServeFile(w, r, "templates/login.html")
+
+	})
 
 	http.ListenAndServe(":1337", nil)
 }
