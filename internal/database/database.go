@@ -2,21 +2,24 @@ package database
 
 import (
 	"database/sql"
-	"fmt"
 	"log"
 
 	_ "github.com/mattn/go-sqlite3"
 )
 
-func Connect() {
+func Connect() (db *sql.DB) {
 	db, err := sql.Open("sqlite3", "../internal/database/users.db")
 
 	if err != nil {
-		log.Fatal(err)
+		log.Fatal("DB connection error: ", err)
 	}
-	tables, err := db.Exec("SELECT * FROM users")
 
-	fmt.Println(err)
-	fmt.Println(tables)
+	db.Exec(`CREATE TABLE IF NOT EXISTS users (
+		id SERIAL PRIMARY KEY,
+		username VARCHAR(25) NOT NULL UNIQUE,
+		password_hash VARCHAR(255) NOT NULL,
+    	salt VARCHAR(50) NOT NULL,
+	);`)
 
+	return db
 }
