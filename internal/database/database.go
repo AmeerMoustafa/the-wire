@@ -1,13 +1,22 @@
-package main
+package database
 
 import (
 	"database/sql"
-	"github.com/mattn/go-sqlite3"
+	"fmt"
+	"log"
+
+	_ "github.com/mattn/go-sqlite3"
 )
 
+func Connect() {
+	db, err := sql.Open("sqlite3", "../internal/database/users.db")
 
-func initDB() {
-	db, err = sql.open("sqlite", "./users.db")
-	fmt.println(db)
+	if err != nil {
+		log.Fatal(err)
+	}
+	tables, err := db.Exec("SELECT * FROM users")
+
+	fmt.Println(err)
+	fmt.Println(tables)
 
 }

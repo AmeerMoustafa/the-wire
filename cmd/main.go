@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"html"
 	"net/http"
+	"thewire/internal/database"
 
 	"golang.org/x/net/websocket"
 )
@@ -62,5 +63,7 @@ func main() {
 		http.ServeFile(w, r, "../templates/login.html")
 
 	})
+	database.Connect()
+
 	http.ListenAndServe(":1337", nil)
 }
