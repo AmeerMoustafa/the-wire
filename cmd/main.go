@@ -2,24 +2,15 @@ package main
 
 import (
 	"net/http"
-	websocketServer "thewire/controllers"
-
-	"golang.org/x/net/websocket"
+	"thewire/routes"
 )
 
-func servIndex(w http.ResponseWriter, r *http.Request) {
-	http.ServeFile(w, r, "../templates/index.html")
-}
-
-func servLogin(w http.ResponseWriter, r *http.Request) {
-	http.ServeFile(w, r, "../templates/login.html")
-
+var server = http.Server{
+	Addr:    ":1337",
+	Handler: routes.Router,
 }
 
 func main() {
-	WSServer := websocketServer.NewServer()
-	http.HandleFunc("/", servIndex)
-	http.Handle("/ws", websocket.Handler(WSServer.HandleWS))
-	http.HandleFunc("/login", servLogin)
-	http.ListenAndServe(":1337", nil)
+
+	server.ListenAndServe()
 }
