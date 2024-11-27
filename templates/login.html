@@ -13,6 +13,8 @@
       integrity="sha384-ujb1lZYygJmzgSwoxRggbCHcjc0rB2XoQrxeTUQyRjrOnlCoYta87iKBWq3EsdM2"
       crossorigin="anonymous"
     ></script>
+    <!-- HTMX Json-enc-->
+    <script src="https://unpkg.com/htmx.org@1.9.12/dist/ext/json-enc.js"></script>
   </head>
   <body>
     <div
@@ -29,11 +31,12 @@
       <div class="w-full max-w-md">
         <div class="border border-green-500 p-6 rounded-lg shadow-lg crt">
           <h2 class="text-2xl font-bold mb-6 text-center">System Access</h2>
-          <form>
+          <form hx-ext="json-enc" hx-post="/login">
             <div class="mb-4">
               <label htmlFor="username" class="block mb-2"> Codename: </label>
               <input
                 id="username"
+                name="username"
                 type="text"
                 class="p-2 w-full bg-black border-2 rounded border-green-500 focus:ring-green-500 focus:border-green-500 focus:outline-none"
                 placeholder="Enter your codename"
@@ -43,6 +46,7 @@
               <label htmlFor="password" class="block mb-2"> Access Key: </label>
               <input
                 id="password"
+                name="password"
                 type="password"
                 class="p-2 w-full bg-black border-2 rounded text-green-500 border-green-500 focus:ring-green-500 focus:border-green-500 focus:outline-none"
                 placeholder="Enter your access key"

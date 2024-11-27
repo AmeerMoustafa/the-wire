@@ -11,6 +11,5 @@ var server = http.Server{
 }
 
 func main() {
-
 	server.ListenAndServe()
 }
