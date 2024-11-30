@@ -15,9 +15,9 @@ func Connect() (db *sql.DB) {
 	}
 
 	db.Exec(`CREATE TABLE IF NOT EXISTS users (
-		id SERIAL PRIMARY KEY,
+		id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
 		username VARCHAR(25) NOT NULL UNIQUE,
-		password_hash VARCHAR(255) NOT NULL,
+		password_hash VARCHAR(255) NOT NULL
 	);`)
 
 	return db
