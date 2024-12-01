@@ -31,7 +31,7 @@
       <div class="w-full max-w-md">
         <div class="border border-green-500 p-6 rounded-lg shadow-lg crt">
           <h2 class="text-2xl font-bold mb-6 text-center">System Access</h2>
-          <form hx-ext="json-enc" hx-post="/login">
+          <form hx-ext="json-enc" hx-post="/login" hx-target="#error">
             <div class="mb-4">
               <label htmlFor="username" class="block mb-2"> Codename: </label>
               <input
@@ -52,7 +52,15 @@
                 placeholder="Enter your access key"
               />
             </div>
-
+            <!---Error section-->
+            <div id="error" hx-swap="innerHTML">
+              <!-- <div
+                id="error"
+                class="mb-4 p-2 border border-red-500 bg-red-500 bg-opacity-10 text-red-500 flex items-center"
+              >
+                Invalid credentials. Access denied.
+              </div> -->
+            </div>
             <button
               type="submit"
               class="p-2 w-full bg-green-500 text-black hover:bg-green-600 focus:ring-green-400 rounded"

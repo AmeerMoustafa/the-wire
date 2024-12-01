@@ -16,6 +16,11 @@ type User struct {
 	Password string `json:"password"`
 }
 
+type JSONResponse struct {
+	Status  string `json:"status"`
+	Results int    `json:"results"`
+}
+
 func CreateUser(w http.ResponseWriter, r *http.Request) {
 	var user User
 
@@ -38,9 +43,8 @@ func CreateUser(w http.ResponseWriter, r *http.Request) {
 
 	id, _ := results.LastInsertId()
 
-	w.Header().Set("content-type", "application/json")
+	w.WriteHeader(http.StatusCreated)
 
-	// Return real JSON here
 	fmt.Println("Created user with the ID: ", id)
 
 	db.Close()
@@ -50,26 +54,29 @@ func CreateUser(w http.ResponseWriter, r *http.Request) {
 func LoginUser(w http.ResponseWriter, r *http.Request) {
 	var user User
 	var returned_user User
-	decoder := json.NewDecoder(r.Body)
-
-	decoder.Decode(&user)
+	json.NewDecoder(r.Body).Decode(&user)
 
 	db := database.Connect()
 
-	row, err := db.Query("SELECT * from users WHERE username = ?", user.Username)
+	row := db.QueryRow("SELECT * from users WHERE username = ?", user.Username)
 
-	if err != nil {
-		fmt.Println("Error: ", err)
-	}
-
-	for row.Next() {
-		row.Scan(&returned_user.id, &returned_user.Username, &returned_user.Password)
-	}
+	row.Scan(&returned_user.id, &returned_user.Username, &returned_user.Password)
 
 	result := bcrypt.CompareHashAndPassword([]byte(returned_user.Password), []byte(user.Password))
 
-	fmt.Println(returned_user.Password)
-	fmt.Println(returned_user)
-	fmt.Println(result)
+	if result == nil {
+
+		w.Header().Set("HX-Redirect", "/")
+
+	} else {
+		form_error := fmt.Sprintf(`
+		<div
+                class="mb-4 p-2 border border-red-500 bg-red-500 bg-opacity-10 text-red-500 flex items-center"
+              >
+                Invalid credentials. Access denied.
+              </div>`)
+		w.Write([]byte(form_error))
+		fmt.Println("Wrong password foo!")
+	}
 
 }
