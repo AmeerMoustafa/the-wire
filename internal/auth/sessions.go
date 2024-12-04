@@ -11,6 +11,6 @@ type Session struct {
 
 var Sessions = map[string]Session{}
 
-func (s Session) isExpired() bool {
+func (s Session) IsExpired() bool {
 	return s.Expiry.Before(time.Now())
 }
