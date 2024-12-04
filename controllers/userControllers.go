@@ -5,8 +5,11 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"thewire/internal/auth"
 	"thewire/internal/database"
+	"time"
 
+	"github.com/google/uuid"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -65,8 +68,22 @@ func LoginUser(w http.ResponseWriter, r *http.Request) {
 	result := bcrypt.CompareHashAndPassword([]byte(returned_user.Password), []byte(user.Password))
 
 	if result == nil {
+		// Creating and setting Cookie if password matches hash - Probably should delegate to own section
+		sessionToken := uuid.NewString()
+		expiresAt := time.Now().Add(120 * time.Second)
 
+		auth.Sessions[sessionToken] = auth.Session{
+			Username: returned_user.Username,
+			Expiry:   expiresAt,
+		}
+
+		http.SetCookie(w, &http.Cookie{
+			Name:    "session_token",
+			Value:   sessionToken,
+			Expires: expiresAt,
+		})
 		w.Header().Set("HX-Redirect", "/")
+		return
 
 	} else {
 		form_error := fmt.Sprintf(`
@@ -75,8 +92,9 @@ func LoginUser(w http.ResponseWriter, r *http.Request) {
               >
                 Invalid credentials. Access denied.
               </div>`)
+		// Set header instead of sending back form, handle form showing on frontend
 		w.Write([]byte(form_error))
-		fmt.Println("Wrong password foo!")
+		return
 	}
 
 }
