@@ -8,6 +8,7 @@ import (
 	"thewire/internal/auth"
 	"thewire/internal/database"
 
+	"github.com/mattn/go-sqlite3"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -39,7 +40,18 @@ func CreateUser(w http.ResponseWriter, r *http.Request) {
 	results, err := db.Exec("INSERT into users (username, password_hash) VALUES (?, ?)", user.Username, hashed_password)
 
 	if err != nil {
-		log.Fatal(err)
+		if sqlite3Err, ok := err.(sqlite3.Error); ok {
+			if sqlite3Err.Code == sqlite3.ErrConstraint {
+				form_error := fmt.Sprintf(`
+		<div
+                class="mb-4 p-2 border border-red-500 bg-red-500 bg-opacity-10 text-red-500 flex items-center"
+              >
+                Username already exists, Access denied!
+              </div>`)
+				w.Write([]byte(form_error))
+			}
+		}
+		return
 	}
 
 	id, _ := results.LastInsertId()
