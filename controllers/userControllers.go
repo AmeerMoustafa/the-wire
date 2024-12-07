@@ -66,6 +66,7 @@ func LoginUser(w http.ResponseWriter, r *http.Request) {
 	result := bcrypt.CompareHashAndPassword([]byte(returned_user.Password), []byte(user.Password))
 
 	if result == nil {
+		// Generating and sending a session cookie
 		sessionCookie := auth.GenerateSession(returned_user.Username)
 		http.SetCookie(w, &sessionCookie)
 		w.Header().Set("HX-Redirect", "/")
