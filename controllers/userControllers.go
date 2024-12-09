@@ -85,6 +85,7 @@ func LoginUser(w http.ResponseWriter, r *http.Request) {
 		return
 
 	} else {
+		// Sending back error if username/password are incorrect
 		form_error := fmt.Sprintf(`
 		<div
                 class="mb-4 p-2 border border-red-500 bg-red-500 bg-opacity-10 text-red-500 flex items-center"
