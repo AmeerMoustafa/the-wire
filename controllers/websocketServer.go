@@ -21,12 +21,14 @@ func NewServer() *WSServer {
 }
 
 func (s *WSServer) HandleWS(ws *websocket.Conn) {
-	fmt.Println("New incoming connection from client:", ws.RemoteAddr())
 	cookie, err := ws.Request().Cookie("session_token")
 	if err != nil {
 		fmt.Println("Cookie not found")
-		ws.Close()
+		ws.Request().Header.Set("HX-Redirect", "/")
+		return
+
 	}
+	fmt.Println("New incoming connection from client:", ws.RemoteAddr())
 	username := auth.Sessions[cookie.Value].Username
 	s.users[cookie.Value] = username
 	s.conns[ws] = true
@@ -42,7 +44,8 @@ func (s *WSServer) readLoop(ws *websocket.Conn) {
 			cookie, err := ws.Request().Cookie("session_token")
 			if err != nil {
 				fmt.Println("Cookie not found, closing")
-				ws.Close()
+				ws.Request().Header.Set("HX-Redirect", "/")
+				return
 			}
 			username := s.users[cookie.Value]
 			message := string(packet["message_input"].(string))
