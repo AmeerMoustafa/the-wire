@@ -20,7 +20,7 @@ func (s Session) IsExpired() bool {
 
 func GenerateSession(username string) http.Cookie {
 	sessionToken := uuid.NewString()
-	expiresAt := time.Now().Add(120 * time.Second)
+	expiresAt := time.Now().Add(24 * time.Hour)
 
 	Sessions[sessionToken] = Session{
 		Username: username,

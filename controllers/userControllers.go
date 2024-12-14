@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"thewire/internal/auth"
 	"thewire/internal/database"
+	"time"
 
 	"github.com/mattn/go-sqlite3"
 	"golang.org/x/crypto/bcrypt"
@@ -64,10 +65,13 @@ func CreateUser(w http.ResponseWriter, r *http.Request) {
 
 }
 
-func LoginUser(w http.ResponseWriter, r *http.Request) {
+func Login(w http.ResponseWriter, r *http.Request) {
 	var user User
 	var returned_user User
 	json.NewDecoder(r.Body).Decode(&user)
+
+	fmt.Println(user)
+	fmt.Println(returned_user)
 
 	db := database.Connect()
 
@@ -94,5 +98,35 @@ func LoginUser(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte(form_error))
 		return
 	}
+
+}
+
+func Logout(w http.ResponseWriter, r *http.Request) {
+	cookie, err := r.Cookie("session_token")
+
+	if err != nil {
+		if err == http.ErrNoCookie {
+			w.Header().Set("HX-Redirect", "/login")
+		}
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+
+	sessionToken := cookie.Value
+
+	delete(auth.Sessions, sessionToken)
+
+	// We need to let the client know that the cookie is expired
+	// In the response, we set the session token to an empty
+	// value and set its expiry as the current time
+
+	http.SetCookie(w, &http.Cookie{
+		Name:    "session_token",
+		Value:   "",
+		Expires: time.Now(),
+	})
+
+	w.Header().Set("HX-Redirect", "/login")
+	return
 
 }

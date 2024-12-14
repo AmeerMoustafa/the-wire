@@ -25,6 +25,7 @@ func (s *WSServer) HandleWS(ws *websocket.Conn) {
 	if err != nil {
 		fmt.Println("Cookie not found")
 		ws.Request().Header.Set("HX-Redirect", "/")
+		ws.Close()
 		return
 
 	}
@@ -45,12 +46,13 @@ func (s *WSServer) readLoop(ws *websocket.Conn) {
 			if err != nil {
 				fmt.Println("Cookie not found, closing")
 				ws.Request().Header.Set("HX-Redirect", "/")
+				ws.Close()
 				return
 			}
 			username := s.users[cookie.Value]
 			message := string(packet["message_input"].(string))
 			formatted_message := fmt.Sprintf(`<div id="message" hx-swap-oob="beforeend">
-    	<p><span>%s: </span>%s</p></div>`, html.EscapeString(username), html.EscapeString(message))
+    	<p><span class="text-green-200">%s: </span>%s</p></div>`, html.EscapeString(username), html.EscapeString(message))
 			go s.broadcast([]byte(formatted_message))
 		}
 

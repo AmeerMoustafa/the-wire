@@ -24,6 +24,15 @@
       ws-connect="/ws"
       class="flex flex-col gap-8 items-center min-h-screen bg-black text-green-500 font-mono p-4 overflow-hidden"
     >
+      <div class="w-full flex bg-black justify-end">
+        <button
+          class="mt-6 mr-6 p-2 bg-green-500 text-black hover:bg-green-600 focus:ring-green-400 rounded"
+          hx-post="/logout"
+          hx-swap="none"
+        >
+          Logout
+        </button>
+      </div>
       <pre>
 ___________.__              __      __.________________________
 \__    ___/|  |__   ____   /  \    /  \   \______   \_   _____/
