@@ -144,6 +144,5 @@ func Logout(w http.ResponseWriter, r *http.Request) {
 	})
 
 	w.Header().Set("HX-Redirect", "/login")
-	return
 
 }

@@ -11,6 +11,7 @@ var Router = http.NewServeMux()
 
 func init() {
 	WSServer := controllers.NewServer()
+
 	Router.HandleFunc("/", controllers.ServeIndex)
 	// Login Routes
 	Router.HandleFunc("GET /login", controllers.ServeLogin)
