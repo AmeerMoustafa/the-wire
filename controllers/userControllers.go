@@ -8,6 +8,7 @@ import (
 	"thewire/internal/auth"
 	"thewire/internal/database"
 	"time"
+	"unicode/utf8"
 
 	"github.com/mattn/go-sqlite3"
 	"golang.org/x/crypto/bcrypt"
@@ -17,11 +18,6 @@ type User struct {
 	id       int
 	Username string `json:"username"`
 	Password string `json:"password"`
-}
-
-type JSONResponse struct {
-	Status  string `json:"status"`
-	Results int    `json:"results"`
 }
 
 func CreateUser(w http.ResponseWriter, r *http.Request) {
@@ -34,6 +30,30 @@ func CreateUser(w http.ResponseWriter, r *http.Request) {
 	hashed_password, err := bcrypt.GenerateFromPassword(password, bcrypt.DefaultCost)
 	if err != nil {
 		log.Fatal(err)
+	}
+
+	if user.Username == "" && user.Password == "" {
+		form_error := fmt.Sprintf(`
+		<div
+                class="mb-4 p-2 border border-red-500 bg-red-500 bg-opacity-10 text-red-500 flex items-center"
+              >
+                Are you drunk?, Access denied!
+              </div>`)
+		w.Write([]byte(form_error))
+		return
+	}
+
+	// Password length check
+	if utf8.RuneCountInString(user.Password) < 8 {
+		form_error := fmt.Sprintf(`
+		<div
+                class="mb-4 p-2 border border-red-500 bg-red-500 bg-opacity-10 text-red-500 flex items-center"
+              >
+                Password must be at least 8 characters, Access denied!
+              </div>`)
+		w.Write([]byte(form_error))
+		return
+
 	}
 
 	db := database.Connect()
@@ -69,9 +89,6 @@ func Login(w http.ResponseWriter, r *http.Request) {
 	var user User
 	var returned_user User
 	json.NewDecoder(r.Body).Decode(&user)
-
-	fmt.Println(user)
-	fmt.Println(returned_user)
 
 	db := database.Connect()
 
