@@ -33,7 +33,12 @@
           <h2 class="text-2xl font-bold mb-6 text-center">
             System Registration
           </h2>
-          <form hx-ext="json-enc" hx-post="/register" hx-target="#error">
+          <form
+            hx-ext="json-enc"
+            hx-post="/register"
+            hx-target="#error"
+            hx-on::after-request="this.reset()"
+          >
             <div class="mb-4">
               <label htmlFor="username" class="block mb-2"> Codename: </label>
               <input

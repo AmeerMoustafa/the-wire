@@ -90,6 +90,17 @@ func Login(w http.ResponseWriter, r *http.Request) {
 	var returned_user User
 	json.NewDecoder(r.Body).Decode(&user)
 
+	if user.Username == "" && user.Password == "" {
+		form_error := fmt.Sprintf(`
+		<div
+                class="mb-4 p-2 border border-red-500 bg-red-500 bg-opacity-10 text-red-500 flex items-center"
+              >
+                Are you drunk?, Access denied!
+              </div>`)
+		w.Write([]byte(form_error))
+		return
+	}
+
 	db := database.Connect()
 
 	row := db.QueryRow("SELECT * from users WHERE username = ?", user.Username)
